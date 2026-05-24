@@ -46,6 +46,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
                 "/api/train/metrics",
                 "/api/train/hardware",
                 "/api/system",
+                "/api/models/download-progress",
+                "/api/models/gguf-download-progress",
             }
             is_excluded = (
                 request.url.path in EXCLUDED_PATHS
