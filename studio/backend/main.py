@@ -26,7 +26,12 @@ import _platform_compat  # noqa: F401
 # Direct `uvicorn main:app` launches bypass run.py, so re-export here too
 # (mirrors run.py). Required BEFORE the unsloth-zoo import below, since
 # its LLAMA_CPP_DEFAULT_DIR binding is import-time.
+from utils.paths.storage_roots import (
+    setup_huggingface_download_env as _setup_huggingface_download_env,
+)
 from utils.paths.storage_roots import studio_root as _studio_root
+
+_setup_huggingface_download_env()
 
 try:
     _LEGACY_STUDIO_ROOT = (_Path.home() / ".unsloth" / "studio").resolve()

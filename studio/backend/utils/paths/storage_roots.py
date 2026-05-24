@@ -246,6 +246,30 @@ def _setup_cache_env() -> None:
         if key not in os.environ:
             os.environ[key] = value
             Path(value).mkdir(parents = True, exist_ok = True)
+    setup_huggingface_download_env()
+
+
+def setup_huggingface_download_env() -> None:
+    """Set Studio-friendly Hugging Face download defaults.
+
+    huggingface_hub reads these at import time, so callers should invoke
+    this before importing Hugging Face download helpers. User-provided
+    values always win.
+    """
+    defaults: dict[str, str] = {
+        # Prefer the modern Xet transport for large GGUF downloads. hf_transfer
+        # is deprecated by Hugging Face now that Xet backs Hub storage.
+        "HF_XET_HIGH_PERFORMANCE": "1",
+        # Increase per-file range parallelism without requiring users to know
+        # about Hugging Face internals.
+        "HF_XET_NUM_CONCURRENT_RANGE_GETS": "64",
+        # Large model downloads can legitimately stall longer than the HF
+        # default 10s on slower or high-latency links.
+        "HF_HUB_DOWNLOAD_TIMEOUT": "60",
+        "HF_HUB_ETAG_TIMEOUT": "30",
+    }
+    for key, value in defaults.items():
+        os.environ.setdefault(key, value)
 
 
 def ensure_studio_directories() -> None:
