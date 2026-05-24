@@ -2446,20 +2446,78 @@ class LlamaCppBackend:
             if self._cancel_event.is_set():
                 raise RuntimeError("Cancelled")
             dl_start = time.monotonic()
-            local_path = hf_hub_download(
-                repo_id = hf_repo,
-                filename = gguf_filename,
-                token = hf_token,
-            )
+
+            def _progress(done: int, total: int) -> None:
+                if self._cancel_event.is_set():
+                    raise RuntimeError("Cancelled")
+                percent = (done / total * 100.0) if total else 0.0
+                logger.info(
+                    "Segmented GGUF download progress: %s/%s bytes (%.1f%%)",
+                    done,
+                    total,
+                    percent,
+                )
+
+            local_path = None
+            try:
+                from utils.models.hf_segmented_download import (
+                    segmented_hf_hub_download,
+                )
+
+                local_path = segmented_hf_hub_download(
+                    repo_id = hf_repo,
+                    filename = gguf_filename,
+                    token = hf_token,
+                    progress = _progress,
+                )
+            except RuntimeError:
+                raise
+            except Exception as segmented_exc:
+                logger.warning(
+                    "Segmented GGUF downloader failed for %s/%s; "
+                    "falling back to huggingface_hub: %s",
+                    hf_repo,
+                    gguf_filename,
+                    segmented_exc,
+                )
+            if local_path is None:
+                local_path = hf_hub_download(
+                    repo_id = hf_repo,
+                    filename = gguf_filename,
+                    token = hf_token,
+                )
             for shard in gguf_extra_shards:
                 if self._cancel_event.is_set():
                     raise RuntimeError("Cancelled")
                 logger.info(f"Resolving GGUF shard: {shard}")
-                hf_hub_download(
-                    repo_id = hf_repo,
-                    filename = shard,
-                    token = hf_token,
-                )
+                try:
+                    from utils.models.hf_segmented_download import (
+                        segmented_hf_hub_download,
+                    )
+
+                    shard_path = segmented_hf_hub_download(
+                        repo_id = hf_repo,
+                        filename = shard,
+                        token = hf_token,
+                        progress = _progress,
+                    )
+                except RuntimeError:
+                    raise
+                except Exception as segmented_exc:
+                    logger.warning(
+                        "Segmented GGUF downloader failed for %s/%s; "
+                        "falling back to huggingface_hub: %s",
+                        hf_repo,
+                        shard,
+                        segmented_exc,
+                    )
+                    shard_path = None
+                if shard_path is None:
+                    hf_hub_download(
+                        repo_id = hf_repo,
+                        filename = shard,
+                        token = hf_token,
+                    )
         except RuntimeError as e:
             if "Cancelled" in str(e):
                 raise

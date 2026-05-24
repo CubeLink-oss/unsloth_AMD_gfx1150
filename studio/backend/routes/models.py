@@ -73,6 +73,7 @@ try:
         is_local_path,
         outputs_root,
         exports_root,
+        cache_root,
         resolve_cached_repo_id_case,
         resolve_output_dir,
         resolve_export_dir,
@@ -104,6 +105,7 @@ except ImportError:
         is_local_path,
         outputs_root,
         exports_root,
+        cache_root,
         resolve_cached_repo_id_case,
         resolve_output_dir,
         resolve_export_dir,
@@ -2277,6 +2279,21 @@ async def get_gguf_download_progress(
                         if f.is_file() and f.name.endswith(".incomplete"):
                             in_progress_bytes += f.stat().st_size
                 break
+
+        segmented_root = cache_root() / "hf-segmented" / target
+        if segmented_root.is_dir():
+            for f in segmented_root.rglob("*.gguf"):
+                fname = f.name.lower().replace("-", "").replace("_", "")
+                if not variant_lower or variant_lower in fname:
+                    downloaded_bytes += f.stat().st_size
+            for parts_dir in segmented_root.rglob("*.gguf.parts"):
+                fname = parts_dir.name.lower().replace("-", "").replace("_", "")
+                if variant_lower and variant_lower not in fname:
+                    continue
+                if parts_dir.is_dir():
+                    for part in parts_dir.glob("*.part"):
+                        if part.is_file():
+                            in_progress_bytes += part.stat().st_size
 
         total_progress_bytes = downloaded_bytes + in_progress_bytes
         progress = (
