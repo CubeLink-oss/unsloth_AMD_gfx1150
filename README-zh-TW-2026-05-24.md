@@ -212,6 +212,56 @@ scripts\install-amd-gfx1150-local.ps1
 scripts\verify-amd-gfx1150.ps1
 ```
 
+## 高速 GGUF 下載與 live dashboard
+
+Studio 原本在載入遠端 GGUF 時主要依賴 `hf_hub_download()`。在本機測試 `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q2_K_XL` 時，單一路徑下載曾只有約 `0.6 MB/s`。本分支新增 Studio 端 segmented downloader，針對大型 GGUF 使用 resumable HTTP Range requests。
+
+行為：
+
+- 預設把大型 GGUF 切成 64 MB segments。
+- 預設 16 個 concurrent segment workers。
+- 每個 segment 下載成 `.part` 檔。
+- 中斷後再次下載會沿用既有 `.part` 檔續傳。
+- 全部分段完成後合併成單一 `.gguf`，再刪除 parts 目錄。
+- 若分段 Range 下載失敗，fallback 回 `huggingface_hub`。
+
+下載暫存位置：
+
+```text
+%USERPROFILE%\.unsloth\studio\cache\hf-segmented
+```
+
+PowerShell live dashboard 會顯示：
+
+```text
+Downloading Qwen3.6-35B-A3B-UD-Q2_K_XL.gguf
+Overall [###############-------------------]  43.8%  5.1 GB/11.7 GB  6.1 MB/s  ETA 18m 28s
+Segments 74/188 done, 16 active, 98 queued, 0 retrying
+Active segments:
+  006/188 [############--------------]  46.9%  30.0 MB/64.0 MB
+  028/188 [########################--]  93.8%  60.0 MB/64.0 MB
+```
+
+可調環境變數：
+
+```powershell
+$env:UNSLOTH_HF_DOWNLOAD_WORKERS = "32"      # 預設 16，最高 32
+$env:UNSLOTH_HF_DOWNLOAD_CHUNK_MB = "64"     # 預設 64
+$env:UNSLOTH_HF_PROGRESS_ROWS = "32"         # 顯示更多 active segment 行
+$env:UNSLOTH_HF_LIVE_PROGRESS = "0"          # 關閉 live dashboard
+$env:UNSLOTH_HF_SEGMENTED_DOWNLOAD = "0"     # 關閉 segmented downloader
+```
+
+同時設定 Hugging Face / Xet 下載預設：
+
+```text
+HF_XET_HIGH_PERFORMANCE=1
+HF_XET_NUM_CONCURRENT_RANGE_GETS=64
+HF_HUB_ENABLE_HF_TRANSFER=0
+HF_HUB_DOWNLOAD_TIMEOUT=60
+HF_HUB_ETAG_TIMEOUT=30
+```
+
 ## 快速安裝
 
 從 repo root 執行：

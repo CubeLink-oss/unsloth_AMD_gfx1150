@@ -37,6 +37,32 @@ Current local target:
 
 For the full Traditional Chinese setup log, see [README-zh-TW-2026-05-24.md](README-zh-TW-2026-05-24.md).
 
+### Fast GGUF Downloads
+
+This branch adds a Studio-side segmented downloader for large GGUF files. It uses resumable HTTP Range requests instead of relying only on a single `hf_hub_download()` stream.
+
+What it does:
+
+- Downloads large GGUF files in 64 MB parts by default.
+- Runs 16 concurrent segment workers by default.
+- Stores in-progress chunks as `.part` files under `%USERPROFILE%\.unsloth\studio\cache\hf-segmented`.
+- Resumes from existing `.part` files after an interrupted download.
+- Merges all parts into the final `.gguf` after every segment completes.
+- Shows a live PowerShell dashboard with overall progress, speed, ETA, completed/active/queued segments, and active segment progress bars.
+- Falls back to `huggingface_hub` if segmented Range downloads cannot be used.
+
+Useful knobs:
+
+```powershell
+$env:UNSLOTH_HF_DOWNLOAD_WORKERS = "32"      # default: 16, max: 32
+$env:UNSLOTH_HF_DOWNLOAD_CHUNK_MB = "64"     # default: 64
+$env:UNSLOTH_HF_PROGRESS_ROWS = "32"         # active segment rows shown in the terminal
+$env:UNSLOTH_HF_LIVE_PROGRESS = "0"          # disable terminal dashboard
+$env:UNSLOTH_HF_SEGMENTED_DOWNLOAD = "0"     # disable segmented downloader
+```
+
+Observed validation on `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q2_K_XL`: the downloader displayed `74/188 done, 16 active, 98 queued` at about `6.1 MB/s`, with per-segment progress bars in Windows Terminal.
+
 ### Supported Product Targets
 
 Exact CPU options vary by country, retailer, and release wave. The important compatibility signal for this branch is the integrated Radeon 890M / `gfx1150` path.
@@ -120,6 +146,32 @@ Exact CPU options vary by country, retailer, and release wave. The important com
 | llama.cpp 後端 | HIP build，使用 `-DGGML_HIP=ON`、`-DAMDGPU_TARGETS=gfx1150` |
 
 完整繁中安裝與改造紀錄請看 [README-zh-TW-2026-05-24.md](README-zh-TW-2026-05-24.md)。
+
+### 高速 GGUF 下載
+
+這個分支新增 Studio 端的大型 GGUF 分段下載器，不再只依賴單一路徑的 `hf_hub_download()`。
+
+功能重點：
+
+- 大型 GGUF 預設切成 64 MB 分段下載。
+- 預設 16 個 concurrent segment workers。
+- 未完成分段會以 `.part` 存在 `%USERPROFILE%\.unsloth\studio\cache\hf-segmented`。
+- 中斷後可沿用既有 `.part` 檔續傳。
+- 所有分段完成後會合併成最後的 `.gguf`。
+- PowerShell 會顯示 live dashboard：總進度、速度、ETA、完成/進行中/排隊 segment 數，以及 active segment 進度條。
+- 如果 Range 分段下載不可用，會 fallback 回 `huggingface_hub`。
+
+可調參數：
+
+```powershell
+$env:UNSLOTH_HF_DOWNLOAD_WORKERS = "32"      # 預設 16，最高 32
+$env:UNSLOTH_HF_DOWNLOAD_CHUNK_MB = "64"     # 預設 64
+$env:UNSLOTH_HF_PROGRESS_ROWS = "32"         # 終端顯示的 active segment 行數
+$env:UNSLOTH_HF_LIVE_PROGRESS = "0"          # 關閉終端 live dashboard
+$env:UNSLOTH_HF_SEGMENTED_DOWNLOAD = "0"     # 關閉分段下載器
+```
+
+已用 `unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q2_K_XL` 驗證：Windows Terminal 顯示 `74/188 done, 16 active, 98 queued`，速度約 `6.1 MB/s`，並能看到 active segment 的個別進度條。
 
 ### 適用產品清單
 
