@@ -2450,6 +2450,14 @@ class LlamaCppBackend:
             def _progress(done: int, total: int) -> None:
                 if self._cancel_event.is_set():
                     raise RuntimeError("Cancelled")
+                live_dashboard = (
+                    os.environ.get("UNSLOTH_HF_LIVE_PROGRESS", "1").strip().lower()
+                    in {"1", "true", "yes", "on"}
+                    and sys.stderr.isatty()
+                    and os.environ.get("NO_COLOR") is None
+                )
+                if live_dashboard:
+                    return
                 percent = (done / total * 100.0) if total else 0.0
                 logger.info(
                     "Segmented GGUF download progress: %s/%s bytes (%.1f%%)",
