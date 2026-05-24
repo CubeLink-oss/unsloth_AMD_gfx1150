@@ -2427,6 +2427,22 @@ class LlamaCppBackend:
         )
         logger.info(f"Resolving GGUF: {gguf_label}")
         try:
+            from importlib.util import find_spec
+            from utils.paths.storage_roots import setup_huggingface_download_env
+
+            setup_huggingface_download_env()
+            logger.info(
+                "HF download transport: hf_xet=%s, HF_XET_HIGH_PERFORMANCE=%s, "
+                "HF_XET_NUM_CONCURRENT_RANGE_GETS=%s, "
+                "HF_HUB_ENABLE_HF_TRANSFER=%s, HF_HUB_DISABLE_XET=%s, "
+                "HF_HUB_DOWNLOAD_TIMEOUT=%s",
+                bool(find_spec("hf_xet")),
+                os.environ.get("HF_XET_HIGH_PERFORMANCE"),
+                os.environ.get("HF_XET_NUM_CONCURRENT_RANGE_GETS"),
+                os.environ.get("HF_HUB_ENABLE_HF_TRANSFER"),
+                os.environ.get("HF_HUB_DISABLE_XET"),
+                os.environ.get("HF_HUB_DOWNLOAD_TIMEOUT"),
+            )
             if self._cancel_event.is_set():
                 raise RuntimeError("Cancelled")
             dl_start = time.monotonic()

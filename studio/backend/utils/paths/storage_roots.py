@@ -267,6 +267,9 @@ def setup_huggingface_download_env() -> None:
         # default 10s on slower or high-latency links.
         "HF_HUB_DOWNLOAD_TIMEOUT": "60",
         "HF_HUB_ETAG_TIMEOUT": "30",
+        # Keep the deprecated hf_transfer path off so the Hub client uses
+        # hf_xet, the current high-performance transport.
+        "HF_HUB_ENABLE_HF_TRANSFER": "0",
     }
     for key, value in defaults.items():
         os.environ.setdefault(key, value)

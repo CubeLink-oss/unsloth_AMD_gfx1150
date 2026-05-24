@@ -12,6 +12,7 @@ def test_huggingface_download_env_defaults_to_fast_xet(monkeypatch):
         "HF_XET_NUM_CONCURRENT_RANGE_GETS",
         "HF_HUB_DOWNLOAD_TIMEOUT",
         "HF_HUB_ETAG_TIMEOUT",
+        "HF_HUB_ENABLE_HF_TRANSFER",
     )
     for key in keys:
         monkeypatch.delenv(key, raising = False)
@@ -22,6 +23,7 @@ def test_huggingface_download_env_defaults_to_fast_xet(monkeypatch):
     assert os.environ["HF_XET_NUM_CONCURRENT_RANGE_GETS"] == "64"
     assert os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] == "60"
     assert os.environ["HF_HUB_ETAG_TIMEOUT"] == "30"
+    assert os.environ["HF_HUB_ENABLE_HF_TRANSFER"] == "0"
 
 
 def test_huggingface_download_env_preserves_user_values(monkeypatch):
@@ -29,6 +31,7 @@ def test_huggingface_download_env_preserves_user_values(monkeypatch):
     monkeypatch.setenv("HF_XET_NUM_CONCURRENT_RANGE_GETS", "16")
     monkeypatch.setenv("HF_HUB_DOWNLOAD_TIMEOUT", "120")
     monkeypatch.setenv("HF_HUB_ETAG_TIMEOUT", "5")
+    monkeypatch.setenv("HF_HUB_ENABLE_HF_TRANSFER", "1")
 
     setup_huggingface_download_env()
 
@@ -36,3 +39,4 @@ def test_huggingface_download_env_preserves_user_values(monkeypatch):
     assert os.environ["HF_XET_NUM_CONCURRENT_RANGE_GETS"] == "16"
     assert os.environ["HF_HUB_DOWNLOAD_TIMEOUT"] == "120"
     assert os.environ["HF_HUB_ETAG_TIMEOUT"] == "5"
+    assert os.environ["HF_HUB_ENABLE_HF_TRANSFER"] == "1"
