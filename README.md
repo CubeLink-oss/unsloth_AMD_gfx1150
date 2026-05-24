@@ -19,6 +19,174 @@ Unsloth Studio lets you run and train models locally.
 <a href="https://unsloth.ai/docs/new/studio">
 <img alt="unsloth studio ui homepage" src="https://github.com/user-attachments/assets/53ae17a9-d975-44ef-9686-efb4ebd0454d" style="max-width: 100%; margin-bottom: 0;"></a>
 
+## Windows AMD Radeon 890M / gfx1150 Notes
+
+[English Version](#windows-amd-radeon-890m--gfx1150-notes) / [中文版本](#windows-amd-radeon-890m--gfx1150-中文說明)
+
+This community branch tracks Windows AMD ROCm/HIP support experiments for Unsloth Studio on AMD Radeon 890M (`gfx1150`) systems, especially Ryzen AI 9 HX 370 / HX PRO 370 laptops, mini PCs, and related devices.
+
+Current local target:
+
+| Item | Value |
+| --- | --- |
+| GPU | AMD Radeon(TM) 890M Graphics |
+| GPU architecture | `gfx1150` |
+| ROCm/HIP SDK | `C:\Program Files\AMD\ROCm\6.4` |
+| PyTorch wheel index | `https://repo.amd.com/rocm/whl/gfx1150` |
+| llama.cpp backend | HIP build with `-DGGML_HIP=ON`, `-DAMDGPU_TARGETS=gfx1150` |
+
+For the full Traditional Chinese setup log, see [README-zh-TW-2026-05-24.md](README-zh-TW-2026-05-24.md).
+
+### Supported Product Targets
+
+Exact CPU options vary by country, retailer, and release wave. The important compatibility signal for this branch is the integrated Radeon 890M / `gfx1150` path.
+
+#### Laptops
+
+| Brand | Product | CPU / GPU |
+| --- | --- | --- |
+| Acer | Swift 14 AI | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | Vivobook S 14 OLED M5406 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | Vivobook S 15 OLED M5506 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | Vivobook S 16 OLED M5606 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | Zenbook S 16 OLED UM5606 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | ProArt PX13 | Ryzen AI 9 HX 370 / Radeon 890M; some configurations also include RTX 4050/4060/4070 |
+| ASUS | ProArt P16 | Ryzen AI 9 HX 370 / Radeon 890M; configurations may include RTX 4060/4070/50-series discrete GPUs |
+| ASUS | TUF Gaming A14 | Ryzen AI 9 HX 370 / Radeon 890M; configurations also include NVIDIA discrete GPUs |
+| ASUS | ROG Zephyrus G14 | Ryzen AI 9 HX 370 / Radeon 890M; configurations also include NVIDIA discrete GPUs |
+| ASUS | ROG Zephyrus G16 | Ryzen AI 9 HX 370 / Radeon 890M; configurations also include NVIDIA discrete GPUs |
+| Dell | Pro 13 Plus / 2-in-1 | Ryzen AI 9 HX 370 or Ryzen AI 9 HX PRO 370 / Radeon 890M |
+| Dell | Pro 14 Plus / 2-in-1 | Ryzen AI 9 HX 370 or Ryzen AI 9 HX PRO 370 / Radeon 890M |
+| Dell | Pro 16 Plus | Ryzen AI 9 HX 370 / Radeon 890M |
+| Framework | Framework Laptop 13 | Ryzen AI 9 HX 370 / Radeon 890M |
+| GPD | Duo OLED | Ryzen AI 9 HX 370 / Radeon 890M |
+| GPD | Pocket 4 | Ryzen AI 9 HX 370 / Radeon 890M |
+| GPD | Win 4 | Ryzen AI 9 HX 370 / Radeon 890M |
+| GPD | Win Mini | Ryzen AI 9 HX 370 / Radeon 890M |
+| HP | OmniBook Ultra 14 | Ryzen AI 9 HX 375 / Radeon 890M |
+| HP | EliteBook X G1a 14 AI | Ryzen AI 9 HX PRO 375 or HX 375 / Radeon 890M |
+| Lenovo | ThinkPad P14s Gen 6 AMD | Ryzen AI 9 HX PRO 370 / Radeon 890M |
+| Lenovo | ThinkPad P16s Gen 4 AMD | Ryzen AI 9 HX PRO 370 / Radeon 890M |
+| MSI | Prestige A16 AI+ | Ryzen AI 9 HX 370 / Radeon 890M |
+| MSI | Stealth A16 AI+ | Ryzen AI 9 HX 370 / Radeon 890M; configurations also include NVIDIA discrete GPUs |
+| MSI | Creator A16 AI+ | Ryzen AI 9 HX 370 / Radeon 890M; configurations also include NVIDIA discrete GPUs |
+| MSI | Pulse A17 AI+ | Ryzen AI 9 HX 370 / Radeon 890M; configurations also include NVIDIA discrete GPUs |
+| NIMO | 17.3" AI Laptop | Ryzen AI 9 HX 370 / Radeon 890M |
+| TUXEDO | InfinityBook Pro 14 Gen10 AMD | Ryzen AI 9 HX 370 / Radeon 890M |
+
+#### Desktops / Mini PCs
+
+| Brand | Product | CPU / GPU |
+| --- | --- | --- |
+| ACEMAGIC | F3A | Ryzen AI 9 HX 370 / Radeon 890M |
+| ACEMAGIC | F5A | Ryzen AI 9 HX 470 / Radeon 890M |
+| ACEMAGIC | Retro X5 | Ryzen AI 9 HX 370 / Radeon 890M |
+| AOOSTAR | GEM10 370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| AOOSTAR | GT37 | Ryzen AI 9 HX 370 / Radeon 890M |
+| AOOSTAR | G-Flip 370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ARCTIC | Senza AI 370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| Beelink | SER9 | Ryzen AI 9 HX 370 / Radeon 890M |
+| Beelink | SER9 Pro | Ryzen AI 9 HX 370 / Radeon 890M |
+| Beelink | SER10 Pro | Ryzen AI 9 HX 470 / Radeon 890M |
+| Beelink | SER10 Max | Ryzen AI 9 HX 470 / Radeon 890M |
+| BOSGAME | BeyondMax M6 / M6 HX370 AI PC | Ryzen AI 9 HX 370 / Radeon 890M |
+| GEEKOM | A9 Max AI Mini PC | Ryzen AI 9 HX 370 or HX 470 / Radeon 890M |
+| GMKtec | EVO-X1 AI Mini PC | Ryzen AI 9 HX 370 / Radeon 890M |
+| MINISFORUM | EliteMini AI370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| MINISFORUM | AI X1 Pro / AI X1 Pro-370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| Sapphire | Edge AI 370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| Topton | D12 Ultra, top-end version | Ryzen AI 9 HX 370 / Radeon 890M |
+
+#### NAS / NAS-Like Systems
+
+| Brand | Product | CPU / GPU |
+| --- | --- | --- |
+| MINISFORUM | N5 Pro AI NAS | Ryzen AI 9 HX PRO 370 / Radeon 890M |
+
+## Windows AMD Radeon 890M / gfx1150 中文說明
+
+[English Version](#windows-amd-radeon-890m--gfx1150-notes) / [中文版本](#windows-amd-radeon-890m--gfx1150-中文說明)
+
+這個社群分支記錄 Unsloth Studio 在 Windows AMD ROCm/HIP 環境上的改造，目標是 AMD Radeon 890M (`gfx1150`) 系統，尤其是 Ryzen AI 9 HX 370 / HX PRO 370 筆記本、Mini PC 和相關設備。
+
+目前本機目標：
+
+| 項目 | 值 |
+| --- | --- |
+| GPU | AMD Radeon(TM) 890M Graphics |
+| GPU 架構 | `gfx1150` |
+| ROCm/HIP SDK | `C:\Program Files\AMD\ROCm\6.4` |
+| PyTorch wheel index | `https://repo.amd.com/rocm/whl/gfx1150` |
+| llama.cpp 後端 | HIP build，使用 `-DGGML_HIP=ON`、`-DAMDGPU_TARGETS=gfx1150` |
+
+完整繁中安裝與改造紀錄請看 [README-zh-TW-2026-05-24.md](README-zh-TW-2026-05-24.md)。
+
+### 適用產品清單
+
+實際 CPU 選項會依國家、零售通路和上市批次不同而變動。對這個分支來說，關鍵相容訊號是內建 Radeon 890M / `gfx1150` 路徑。
+
+#### 筆記本電腦
+
+| 品牌 | 產品名稱 | CPU / GPU |
+| --- | --- | --- |
+| Acer | Swift 14 AI | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | Vivobook S 14 OLED M5406 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | Vivobook S 15 OLED M5506 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | Vivobook S 16 OLED M5606 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | Zenbook S 16 OLED UM5606 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ASUS | ProArt PX13 | Ryzen AI 9 HX 370 / Radeon 890M，部分配置另有 RTX 4050/4060/4070 |
+| ASUS | ProArt P16 | Ryzen AI 9 HX 370 / Radeon 890M，另搭 RTX 4060/4070/50 系列等獨顯配置 |
+| ASUS | TUF Gaming A14 | Ryzen AI 9 HX 370 / Radeon 890M，另搭 NVIDIA 獨顯 |
+| ASUS | ROG Zephyrus G14 | Ryzen AI 9 HX 370 / Radeon 890M，另搭 NVIDIA 獨顯 |
+| ASUS | ROG Zephyrus G16 | Ryzen AI 9 HX 370 / Radeon 890M，另搭 NVIDIA 獨顯 |
+| Dell | Pro 13 Plus / 2-in-1 | Ryzen AI 9 HX 370 或 Ryzen AI 9 HX PRO 370 / Radeon 890M |
+| Dell | Pro 14 Plus / 2-in-1 | Ryzen AI 9 HX 370 或 Ryzen AI 9 HX PRO 370 / Radeon 890M |
+| Dell | Pro 16 Plus | Ryzen AI 9 HX 370 / Radeon 890M |
+| Framework | Framework Laptop 13 | Ryzen AI 9 HX 370 / Radeon 890M |
+| GPD | Duo OLED | Ryzen AI 9 HX 370 / Radeon 890M |
+| GPD | Pocket 4 | Ryzen AI 9 HX 370 / Radeon 890M |
+| GPD | Win 4 | Ryzen AI 9 HX 370 / Radeon 890M |
+| GPD | Win Mini | Ryzen AI 9 HX 370 / Radeon 890M |
+| HP | OmniBook Ultra 14 | Ryzen AI 9 HX 375 / Radeon 890M |
+| HP | EliteBook X G1a 14 AI | Ryzen AI 9 HX PRO 375 或 HX 375 / Radeon 890M |
+| Lenovo | ThinkPad P14s Gen 6 AMD | Ryzen AI 9 HX PRO 370 / Radeon 890M |
+| Lenovo | ThinkPad P16s Gen 4 AMD | Ryzen AI 9 HX PRO 370 / Radeon 890M |
+| MSI | Prestige A16 AI+ | Ryzen AI 9 HX 370 / Radeon 890M |
+| MSI | Stealth A16 AI+ | Ryzen AI 9 HX 370 / Radeon 890M，另搭 NVIDIA 獨顯 |
+| MSI | Creator A16 AI+ | Ryzen AI 9 HX 370 / Radeon 890M，另搭 NVIDIA 獨顯 |
+| MSI | Pulse A17 AI+ | Ryzen AI 9 HX 370 / Radeon 890M，另搭 NVIDIA 獨顯 |
+| NIMO | 17.3" AI Laptop | Ryzen AI 9 HX 370 / Radeon 890M |
+| TUXEDO | InfinityBook Pro 14 Gen10 AMD | Ryzen AI 9 HX 370 / Radeon 890M |
+
+#### 台式電腦 / Mini PC
+
+| 品牌 | 產品名稱 | CPU / GPU |
+| --- | --- | --- |
+| ACEMAGIC | F3A | Ryzen AI 9 HX 370 / Radeon 890M |
+| ACEMAGIC | F5A | Ryzen AI 9 HX 470 / Radeon 890M |
+| ACEMAGIC | Retro X5 | Ryzen AI 9 HX 370 / Radeon 890M |
+| AOOSTAR | GEM10 370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| AOOSTAR | GT37 | Ryzen AI 9 HX 370 / Radeon 890M |
+| AOOSTAR | G-Flip 370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| ARCTIC | Senza AI 370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| Beelink | SER9 | Ryzen AI 9 HX 370 / Radeon 890M |
+| Beelink | SER9 Pro | Ryzen AI 9 HX 370 / Radeon 890M |
+| Beelink | SER10 Pro | Ryzen AI 9 HX 470 / Radeon 890M |
+| Beelink | SER10 Max | Ryzen AI 9 HX 470 / Radeon 890M |
+| BOSGAME | BeyondMax M6 / M6 HX370 AI PC | Ryzen AI 9 HX 370 / Radeon 890M |
+| GEEKOM | A9 Max AI Mini PC | Ryzen AI 9 HX 370 或 HX 470 / Radeon 890M |
+| GMKtec | EVO-X1 AI Mini PC | Ryzen AI 9 HX 370 / Radeon 890M |
+| MINISFORUM | EliteMini AI370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| MINISFORUM | AI X1 Pro / AI X1 Pro-370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| Sapphire | Edge AI 370 | Ryzen AI 9 HX 370 / Radeon 890M |
+| Topton | D12 Ultra, top-end version | Ryzen AI 9 HX 370 / Radeon 890M |
+
+#### NAS / 類 NAS 系統
+
+| 品牌 | 產品名稱 | CPU / GPU |
+| --- | --- | --- |
+| MINISFORUM | N5 Pro AI NAS | Ryzen AI 9 HX PRO 370 / Radeon 890M |
+
 ## ⚡ Get started
 
 #### macOS, Linux, WSL:
